@@ -1,90 +1,103 @@
-var balloon,balloonImage1,balloonImage2;
-var balloonPosition;
-var database;
-var position;
-// create database and position variable here
+const Engine = Matter.Engine;
+const World= Matter.World;
+const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint
 
-function preload(){
-   bg =loadImage("cityImage.png");
-   balloonImage1=loadAnimation("hotairballoon1.png");
-   balloonImage2=loadAnimation("hotairballoon1.png","hotairballoon1.png",
-   "hotairballoon1.png","hotairballoon2.png","hotairballoon2.png",
-   "hotairballoon2.png","hotairballoon3.png","hotairballoon3.png","hotairballoon3.png");
-  }
+var backgroundImg;
+var ground1;
+var block1,block2,block3,block10,block11,block12,block13,block14,block15,block16,block17,block18,block19,block20,block21
+var block4,block5,block6,block7,block8,block9;
+var Superhero;
+var rope;
+var monster;
 
-//Function to set initial environment
+function preload() {
+//preload the images here
+backgroundImg=loadImage("g.png");
+}
+
 function setup() {
-  database=firebase.database();
-  createCanvas(1500,700);
+  createCanvas(1400, 800);
+  // create sprites here
+  engine = Engine.create();
+  world = engine.world;
+  Superhero =new Hero(300,500,80);
 
-  var balloonPosition=database.ref('balloon/height');
-  balloonPosition.on("value",readHeight,showError);
+ rope = new Rope(Superhero.body, {x:100, y:360});
 
-  balloon=createSprite(250,450,150,150);
-  balloon.addAnimation("hotAirBalloon",balloonImage1);
-  balloon.scale=0.4;
+ monster = new Monster(800, 500, 100)
 
-  textSize(20); 
-}
-
-// function to display UI
-function draw() {
-  background(bg);
-
-  if(keyDown(LEFT_ARROW)){
-    updateHeight(-10,0);
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
-    //write code to move air balloon in left direction
-    
-    balloon.x=balloon.x-10;
-  }
-  else if(keyDown(RIGHT_ARROW)){
-    updateHeight(+10,0)
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
-    
-    //write code to move air balloon in right direction
-    balloon.x=balloon.x+10;
-    
-  }
-  else if(keyDown(UP_ARROW)){
-    updateHeight(0,-10);
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
-    balloon.scale=balloon.scale-0.01;
-    //write code to move air balloon in up direction
-    balloon.y=balloon.y-10;
-
+  ground1=new ground(500,700,1000,20);
+  block1=new block(550,100,40,40);
+  block2=new block(550,100,40,40);
+  block3=new block(550,100,40,40);
+  block4=new block(550,100,40,40);
+  block5=new block(550,100,40,40);
+  block6=new block(550,100,40,40);
+  block7=new block(550,100,40,40);
   
-    
-  }
-    
-  else if(keyDown(DOWN_ARROW)){
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
-    //write code to move air balloon in down direction
-    updateHeight(0,+10);
-    balloon.y=balloon.y+10;
-    balloon.scale=balloon.scale+0.01;
-  }
+  block8=new block(500,100,40,40);
+  block9=new block(500,100,40,40);
+  block10=new block(500,100,40,40);
+  block11=new block(500,100,40,40);
+  block12=new block(500,100,40,40);
+  block13=new block(500,100,40,40);
+  block14=new block(500,100,40,40);
 
-  drawSprites();
-  fill(0);
-  stroke("white");
-  textSize(25);
-  text("**Use arrow keys to move Hot Air Balloon!",40,40);
-}
-function updateHeight(x,y){
-  database.ref("balloon/height").set({
-    'x':height.x+x,
-    'y':height.y+y
-  })
-}
+  block15=new block(450,100,40,40);
+  block16=new block(450,100,40,40);
+  block17=new block(450,100,40,40);
+  block18=new block(450,100,40,40);
+  block19=new block(450,100,40,40);
+  block20=new block(450,100,40,40);
+  block21=new block(450,100,40,40);
 
-function readHeight(data){
-  height = data.val();
-  balloon.x = height .x;
-  balloon.y =  height.y;
+
+ 
+
+ 
 
 }
 
-function showError(){
-  console.log("Error in writing to the data base");
+function draw() {
+  background(backgroundImg);
+  ground1.display();
+  block1.display();  
+  block2.display(); 
+  block3.display(); 
+  block4.display(); 
+  block5.display(); 
+  block6.display(); 
+  block7.display(); 
+
+  block8.display();
+  block9.display();
+  block10.display();
+  block11.display();
+  block12.display();
+  block13.display();
+  block14.display();
+
+  block15.display();
+  block16.display();
+  block17.display();
+  block18.display();
+  block19.display();
+  block20.display();
+  block21.display();
+
+  Superhero.display();
+
+  rope.display();
+
+  monster.display();
+
+  Engine.update(engine);
+}
+
+function mouseDragged(){
+  Matter.Body.setPosition(Superhero.body, {x:mouseX, y:mouseY})
+}
+function mouseReleased(){
+  rope.fly();
 }
